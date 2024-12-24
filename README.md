@@ -41,3 +41,7 @@ You could either win only 1 of these 3, win none or win a combo of **Medium & Sm
 -   **Big**
     -   Chance to win of **5%**
     -   Win Multiplier between 2x–10x
+
+# A chance to increase luck
+
+i added a `tryIncreaseLuck` param to help. if player plays the pray or whatever feature in our game. we will set `tryIncraseLuck` to `true` which will give the player a bonus 1-3% luck **FOR NORMAL WINS** ONLY!
