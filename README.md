@@ -27,9 +27,9 @@ There are **3** types of **Jackpot**.
 
 ### Normal Wins
 
-Multiply ur bets. Odds are higher based on multiplier.
-There are **3** types of **Normal wins**. **Small**, **Medium**, **Big**.
-Within a single bet ur able to win either 1 **Medium** or **Big** prize and also a **Small** prize.
+Multiply ur bets. Odds are higher based on multiplier.  
+There are **3** types of Normal wins. **Small**, **Medium**, **Big**.  
+Within a single bet ur able to win either 1 **Medium** or **Big** prize and also a **Small** prize.  
 You could either win only 1 of these 3, win none or win a combo of **Medium & Small** or **Big & Small**
 
 -   **Small**
