@@ -114,7 +114,7 @@ class GamblingGame {
             }
             // Small Prize Roll
             if (player.chance < scaledSmallWinProb) {
-                const smallWinMultiplier = 0.1 + player.chance; // Multiplier between 0.1x–0.5x
+                const smallWinMultiplier = 0.1 + player.chance * 0.7; // Multiplier between 0.1x–0.8x
                 winnings += smallWinMultiplier * player.bet;
                 console.log(`Player ${playerId} won ${smallWinMultiplier * player.bet}! Small Win!`);
                 prizeType = prizeType === "big" || prizeType === "medium" ? "Combo!" : "small";
@@ -143,11 +143,13 @@ class GamblingGame {
 
 const prompt = require("prompt-sync")();
 const game = new GamblingGame();
-while (true) {
-    const userInput = prompt("Again?");
-    const options = userInput.split(" ");
+let i = 0;
+while (i < 10000) {
+    // const userInput = prompt("Again?");
+    // const options = userInput.split(" ");
 
     // const result = game.placeBet(options[0], Number(options[1]), options[2] === "true" ? true : false);
     const result = game.placeBet("Potato", 100, true);
     console.log(result);
+    i++;
 }
