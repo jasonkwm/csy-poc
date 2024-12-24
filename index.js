@@ -8,7 +8,7 @@ class GamblingGame {
         this.miniJackpotChance = 0.05; // 5% chance to win mini jackpot
         this.majorJackpotChance = 0.02; // 2% chance to win major jackpot
         this.megaJackpotChance = 0.008; // 0.8% chance to win mega jackpot
-        this.players = {}; // {playerId: {bet: number, winnings: number, bonusLuck: number}}
+        this.players = {}; // Store players {playerId: {bet: number, winnings: number}}
         this.baseSmallWinProbability = 0.5; // 50% chance for small win
         this.baseMediumWinProbability = 0.25; // 25% chance for medium win
         this.baseBigWinProbability = 0.05; // 5% chance for big win
@@ -23,6 +23,8 @@ class GamblingGame {
         } else {
             this.players[playerId].bet += amount;
         }
+        console.log("==============================================");
+        console.log("Game Start!");
 
         const ownerFee = amount * this.ownerFee;
         const amountAfterFee = amount - ownerFee;
@@ -36,7 +38,7 @@ class GamblingGame {
         this.miniJackpotPool = this.pool * 0.15; // Mini Jackpot (20% of the pool)
         this.majorJackpotPool = this.pool * 0.3; // Major Jackpot (30% of the pool)
         this.megaJackpotPool = this.pool * 0.6; // Mega Jackpot (60% of the pool)
-
+        console.log(`Current prize pool ${this.pool}.`);
         // Give feedback about the fee and jackpot contributions
         console.log(
             `Player ${playerId} placed a bet of $${amount}. Fee of $${ownerFee.toFixed(2)} taken for the owner.`
@@ -124,6 +126,8 @@ class GamblingGame {
         this.players[playerId].winnings += winnings;
         console.log(`Player ${playerId} won a total of $${winnings}!`);
         console.log(`Prize Pool has a remaining $${this.pool}!`);
+        console.log("Game End!");
+        console.log("==============================================");
         // Return result immediately
         return {
             playerId,
@@ -131,7 +135,6 @@ class GamblingGame {
             feesEarned: ownerFee,
             prizeType,
             winnings,
-            beforePrizePool: this.pool + winnings,
             remainingPrizePool: this.pool,
         };
     }
