@@ -86,8 +86,9 @@ class GamblingGame {
             prizeType = "miniJackpot";
             console.log(`Player ${playerId} won the Mini Jackpot of $${jackpotPrize.toFixed(2)}!`);
         }
-        console.log(`Player ${playerId} did not manage to win any jackpot.`);
+
         if (!prizeType.includes("Jackpot")) {
+            console.log(`Player ${playerId} did not manage to win any jackpot.`);
             const scaledSmallWinProb = this.baseSmallWinProbability + player.bonusLuck;
             const scaledMediumWinProb = this.baseMediumWinProbability + player.bonusLuck;
             const scaledBigWinProb = this.baseBigWinProbability + player.bonusLuck / 2;
