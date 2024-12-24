@@ -5,12 +5,12 @@ class GamblingGame {
         this.miniJackpotPool = 0; // Mini Jackpot (20% of the pool)
         this.majorJackpotPool = 0; // Major Jackpot (30% of the pool)
         this.megaJackpotPool = 0; // Mega Jackpot (60% of the pool)
-        this.miniJackpotChance = 0.05; // 5% chance to win mini jackpot
-        this.majorJackpotChance = 0.02; // 2% chance to win major jackpot
-        this.megaJackpotChance = 0.008; // 0.8% chance to win mega jackpot
+        this.miniJackpotChance = 0.03; // 3% chance to win mini jackpot
+        this.majorJackpotChance = 0.01; // 1% chance to win major jackpot
+        this.megaJackpotChance = 0.005; // 0.5% chance to win mega jackpot
         this.players = {}; // Store players {playerId: {bet: number, winnings: number}}
         this.baseSmallWinProbability = 0.5; // 50% chance for small win
-        this.baseMediumWinProbability = 0.25; // 25% chance for medium win
+        this.baseMediumWinProbability = 0.15; // 15% chance for medium win
         this.baseBigWinProbability = 0.05; // 5% chance for big win
         this.maxProbability = 0.5; // Max total win probability
     }
@@ -35,9 +35,9 @@ class GamblingGame {
 
         // Add the remaining amount (after fee) to the total prize pool
         this.pool += amountAfterFee;
-        this.miniJackpotPool = this.pool * 0.15; // Mini Jackpot (20% of the pool)
+        this.miniJackpotPool = this.pool * 0.15; // Mini Jackpot (15% of the pool)
         this.majorJackpotPool = this.pool * 0.3; // Major Jackpot (30% of the pool)
-        this.megaJackpotPool = this.pool * 0.6; // Mega Jackpot (60% of the pool)
+        this.megaJackpotPool = this.pool * 0.5; // Mega Jackpot (50% of the pool)
         console.log(`Current prize pool ${this.pool}.`);
         // Give feedback about the fee and jackpot contributions
         console.log(
@@ -62,7 +62,7 @@ class GamblingGame {
         let winnings = 0;
         let prizeType = "none";
         console.log(
-            `Player ${playerId} has a luck of ${(player.chance * 100).toFixed(
+            `Player ${playerId} has a luck of ${((1 - player.chance) * 100).toFixed(
                 2
             )}%. Bonus luck does not apply to jackpot.`
         );
@@ -89,7 +89,7 @@ class GamblingGame {
 
         if (!prizeType.includes("Jackpot")) {
             console.log(`Player ${playerId} did not manage to win any jackpot.`);
-            const scaledSmallWinProb = this.baseSmallWinProbability + player.bonusLuck;
+            const scaledSmallWinProb = this.baseSmallWinProbability + player.bonusLuck * 2;
             const scaledMediumWinProb = this.baseMediumWinProbability + player.bonusLuck;
             const scaledBigWinProb = this.baseBigWinProbability + player.bonusLuck / 2;
             console.log(
