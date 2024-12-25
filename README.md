@@ -6,6 +6,8 @@ npm install && node index.js
 
 # Whats inside this game.
 
+In this game everyone plays with the same prize pool of money `this.pool` and for every bet, the money goes into `this.pool` which would be use to handle all fo the payouts. No player can win more than the total in `this.pool`. The house takes 2% of bets as fees. and the house makes nothing from `this.pool`.
+
 ## 2Types of winning.
 
 Theres 2 types of winning **Jackpot** & **Normal Wins**
