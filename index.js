@@ -58,7 +58,7 @@ class GamblingGame {
 
         // Try to increase luck if specified
         if (tryIncreaseLuck) {
-            const randomLuck = Math.random() * 0.03; // Luck increase between 0% and 2%
+            const randomLuck = Math.random() * 0.03; // Luck increase between 0% and 3%
             player.bonusLuck += randomLuck;
 
             // console.log(
@@ -114,7 +114,7 @@ class GamblingGame {
                 prizeType = "big";
                 // Medium Prize Roll
             } else if (player.chance < scaledMediumWinProb) {
-                const mediumWinMultiplier = 1 + player.chance * 3; // Multiplier between 1x–2x
+                const mediumWinMultiplier = 1 + player.chance * 3; // Multiplier between 1x–3x
                 winnings += mediumWinMultiplier * player.bet;
                 // console.log(`Player ${playerId} won ${mediumWinMultiplier * player.bet}! Medium Win!`);
                 prizeType = "medium";
