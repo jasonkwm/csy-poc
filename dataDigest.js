@@ -19,6 +19,9 @@ const objCount = {
     feesEarned: 0,
     dropBelow10k: 0,
     dropBelow5k: 0,
+    dropBelow1k: 0,
+    dropBelow100: 0,
+    wentTo0: 0,
     above50k: 0,
     above100k: 0,
 };
@@ -31,10 +34,16 @@ for (let i in parsed) {
     if (parsed[i].prizeType.includes("Jackpot")) {
         objCount["jackpot"] += 1;
     }
-    if (parsed[i].remainingPrizePool <= 10000) {
-        objCount["dropBelow10k"] += 1;
+    if (parsed[i].remainingPrizePool <= 10) {
+        objCount["wentTo0"] += 1;
+    } else if (parsed[i].remainingPrizePool <= 100) {
+        objCount["dropBelow100"] += 1;
+    } else if (parsed[i].remainingPrizePool <= 1000) {
+        objCount["dropBelow1k"] += 1;
     } else if (parsed[i].remainingPrizePool <= 5000) {
         objCount["dropBelow5k"] += 1;
+    } else if (parsed[i].remainingPrizePool <= 10000) {
+        objCount["dropBelow10k"] += 1;
     } else if (parsed[i].remainingPrizePool >= 100000) {
         objCount["above100k"] += 1;
     } else if (parsed[i].remainingPrizePool >= 50000) {

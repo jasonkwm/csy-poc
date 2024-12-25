@@ -4,17 +4,17 @@ const prompt = promptSync();
 class GamblingGame {
     constructor() {
         this.pool = 0; // Total pool for prize distribution
-        this.ownerFee = 0.02; // 2% of the bet goes to the owner
-        this.miniJackpotPool = 0; // Mini Jackpot (15% of the pool)
-        this.majorJackpotPool = 0; // Major Jackpot (30% of the pool)
-        this.megaJackpotPool = 0; // Mega Jackpot (60% of the pool)
-        this.miniJackpotChance = 0.01; // 1% chance to win mini jackpot
-        this.majorJackpotChance = 0.001; // 0.1% chance to win major jackpot
-        this.megaJackpotChance = 0.0001; // 0.001% chance to win mega jackpot
+        this.ownerFee = 0.02; // 2% of the bet goes to the owner capped at 50
+        this.miniJackpotPool = 0; // Mini Jackpot (10% of the pool)
+        this.majorJackpotPool = 0; // Major Jackpot (20% of the pool)
+        this.megaJackpotPool = 0; // Mega Jackpot (50% of the pool)
+        this.miniJackpotChance = 0.015; // 1.5% chance to win mini jackpot
+        this.majorJackpotChance = 0.002; // 0.2% chance to win major jackpot
+        this.megaJackpotChance = 0.0002; // 0.02% chance to win mega jackpot
         this.players = {}; // Store players {playerId: {bet: number, winnings: number}}
-        this.baseSmallWinProbability = 0.5; // 50% chance for small win
-        this.baseMediumWinProbability = 0.15; // 15% chance for medium win
-        this.baseBigWinProbability = 0.05; // 5% chance for big win
+        this.baseSmallWinProbability = 0.6; // 60% chance for small win
+        this.baseMediumWinProbability = 0.18; // 18% chance for medium win
+        this.baseBigWinProbability = 0.08; // 8% chance for big win
         this.maxProbability = 0.5; // Max total win probability
     }
 
@@ -22,25 +22,29 @@ class GamblingGame {
         if (amount <= 0) throw new Error("Bet amount must be positive.");
 
         if (!this.players[playerId]) {
-            this.players[playerId] = { bet: amount, winnings: 0 };
+            this.players[playerId] = { bet: amount, winnings: 0, accumulatedLuck: 0 };
         } else {
             this.players[playerId].bet += amount;
+            // have a max luck accumulation of 2%
+            if (this.players[playerId].accumulatedLuck < 0.02 && tryIncreaseLuck) {
+                this.players[playerId].accumulatedLuck += 0.0005;
+            }
         }
         // console.log("==============================================");
         // console.log("Game Start!");
 
-        const ownerFee = amount * this.ownerFee;
+        const ownerFee = amount * this.ownerFee > 50 ? 50 : amount * this.ownerFee;
         const amountAfterFee = amount - ownerFee;
         const chance = Math.random(); // Number is inverted. 0.8 means 20% chance of winning
-        const player = { bet: amountAfterFee, winnings: 0, bonusLuck: 0, chance };
+        const player = { bet: amountAfterFee, winnings: 0, bonusLuck: this.players[playerId].accumulatedLuck, chance };
 
         // Take 5% fee for the owner
 
         // Add the remaining amount (after fee) to the total prize pool
         this.pool += amountAfterFee;
-        this.miniJackpotPool = this.pool * 0.15; // Mini Jackpot (15% of the pool)
-        this.majorJackpotPool = this.pool * 0.3; // Major Jackpot (30% of the pool)
-        this.megaJackpotPool = this.pool * 0.6; // Mega Jackpot (60% of the pool)
+        this.miniJackpotPool = this.pool * 0.1; // Mini Jackpot (10% of the pool)
+        this.majorJackpotPool = this.pool * 0.2; // Major Jackpot (20% of the pool)
+        this.megaJackpotPool = this.pool * 0.5; // Mega Jackpot (50% of the pool)
         // console.log(`Current prize pool ${this.pool}.`);
         // Give feedback about the fee and jackpot contributions
         // console.log(
@@ -54,7 +58,7 @@ class GamblingGame {
 
         // Try to increase luck if specified
         if (tryIncreaseLuck) {
-            const randomLuck = Math.random() * 0.03; // Luck increase between 0% and 3%
+            const randomLuck = Math.random() * 0.03; // Luck increase between 0% and 2%
             player.bonusLuck += randomLuck;
 
             // console.log(
@@ -104,20 +108,20 @@ class GamblingGame {
             // );
             // Big Prize Roll
             if (player.chance < scaledBigWinProb) {
-                const bigWinMultiplier = 2 + player.chance * 8; // Multiplier between 2x–10x
+                const bigWinMultiplier = 3 + player.chance * 12; // Multiplier between 3x–15x
                 winnings += bigWinMultiplier * player.bet;
                 // console.log(`Player ${playerId} won ${bigWinMultiplier * player.bet}! Big Win!`);
                 prizeType = "big";
                 // Medium Prize Roll
             } else if (player.chance < scaledMediumWinProb) {
-                const mediumWinMultiplier = 1 + player.chance * 2; // Multiplier between 1x–2x
+                const mediumWinMultiplier = 1 + player.chance * 3; // Multiplier between 1x–2x
                 winnings += mediumWinMultiplier * player.bet;
                 // console.log(`Player ${playerId} won ${mediumWinMultiplier * player.bet}! Medium Win!`);
                 prizeType = "medium";
             }
             // Small Prize Roll
             if (player.chance < scaledSmallWinProb) {
-                const smallWinMultiplier = 0.1 + player.chance * 0.7; // Multiplier between 0.1x–0.8x
+                const smallWinMultiplier = 0.2 + player.chance * 0.9; // Multiplier between 0.2x–1x
                 winnings += smallWinMultiplier * player.bet;
                 // console.log(`Player ${playerId} won ${smallWinMultiplier * player.bet}! Small Win!`);
                 prizeType = prizeType === "big" || prizeType === "medium" ? "Combo!" : "small";
@@ -148,22 +152,32 @@ const game = new GamblingGame();
 let i = 0;
 
 let data = [];
+let prevResult = {};
 while (i < 1_000_000) {
     // const userInput = prompt("Again?");
     // const options = userInput.split(" ");
     // const result = game.placeBet(options[0], Number(options[1]), options[2] === "true" ? true : false);
     let result;
-    if (i % 100_000 === 0) {
-        result = game.placeBet("Potato", 10_000, true);
-    } else if (i % 10_000 === 0) {
-        result = game.placeBet("Potato", 1_000, true);
-    } else if (i % 1_000 === 0) {
+    if (i === 0) {
         result = game.placeBet("Potato", 100, true);
-    } else if (i % 100 === 0) {
-        result = game.placeBet("Potato", Math.floor(Math.random() * 51) + 50, true);
+        prevResult = result;
     } else {
-        result = game.placeBet("Potato", Math.floor(Math.random() * 10) + 90, true);
+        // let a = Math.floor(prevResult.remainingPrizePool * 0.1);
+        // console.log("a", prevResult.remainingPrizePool, Math.floor(prevResult.remainingPrizePool * 0.01));
+        let a = Math.floor(prevResult.remainingPrizePool * 0.01);
+        result = game.placeBet("Potato", a > 1_000 ? 1_000 : a < 10 ? 10 : a, true);
     }
+
+    // if (i % 10_000 === 0) {
+    //     result = game.placeBet("Potato", 1_000, true);
+    // } else if (i % 1_000 === 0) {
+    //     result = game.placeBet("Potato", 100, true);
+    // } else if (i % 100 === 0) {
+    //     result = game.placeBet("Potato", Math.floor(Math.random() * 51) + 50, true);
+    // } else {
+    //     result = game.placeBet("Potato", Math.floor(Math.random() * 10) + 90, true);
+    // }
+    prevResult = result;
     // console.log(result);
     data.push(result);
     i++;
