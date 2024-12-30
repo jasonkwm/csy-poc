@@ -5,9 +5,6 @@ class GamblingGame {
     constructor() {
         this.pool = 0; // Total pool for prize distribution
         this.ownerFee = 0.02; // 2% of the bet goes to the owner capped at 50
-        this.miniJackpotPool = 0; // Mini Jackpot (10% of the pool)
-        this.majorJackpotPool = 0; // Major Jackpot (20% of the pool)
-        this.megaJackpotPool = 0; // Mega Jackpot (50% of the pool)
         this.miniJackpotChance = 0.015; // 1.5% chance to win mini jackpot
         this.majorJackpotChance = 0.002; // 0.2% chance to win major jackpot
         this.megaJackpotChance = 0.0002; // 0.02% chance to win mega jackpot
@@ -15,7 +12,6 @@ class GamblingGame {
         this.baseSmallWinProbability = 0.6; // 60% chance for small win
         this.baseMediumWinProbability = 0.18; // 18% chance for medium win
         this.baseBigWinProbability = 0.08; // 8% chance for big win
-        this.maxProbability = 0.5; // Max total win probability
     }
 
     placeBet(playerId, amount, tryIncreaseLuck = false) {
@@ -42,18 +38,11 @@ class GamblingGame {
 
         // Add the remaining amount (after fee) to the total prize pool
         this.pool += amountAfterFee;
-        this.miniJackpotPool = this.pool * 0.1; // Mini Jackpot (10% of the pool)
-        this.majorJackpotPool = this.pool * 0.2; // Major Jackpot (20% of the pool)
-        this.megaJackpotPool = this.pool * 0.5; // Mega Jackpot (50% of the pool)
+
         // console.log(`Current prize pool ${this.pool}.`);
         // Give feedback about the fee and jackpot contributions
         // console.log(
         //     `Player ${playerId} placed a bet of $${amount}. Fee of $${ownerFee.toFixed(2)} taken for the owner.`
-        // );
-        // console.log(
-        //     `Mini Jackpot: $${this.miniJackpotPool.toFixed(2)}, Major Jackpot: $${this.majorJackpotPool.toFixed(
-        //         2
-        //     )}, Mega Jackpot: $${this.megaJackpotPool.toFixed(2)}`
         // );
 
         // Try to increase luck if specified
@@ -75,19 +64,22 @@ class GamblingGame {
         // );
         // Jackpot Check: Random chance to win a jackpot
         if (player.chance < this.megaJackpotChance) {
-            const jackpotPrize = this.megaJackpotPool;
+            // Mega Jackpot 20% of prize pool
+            const jackpotPrize = this.pool * 0.5;
             this.megaJackpotPool = 0; // Reset mega jackpot after winning
             winnings += jackpotPrize;
             prizeType = "megaJackpot";
             // console.log(`Player ${playerId} won the Mega Jackpot of $${jackpotPrize.toFixed(2)}!`);
         } else if (player.chance < this.majorJackpotChance) {
-            const jackpotPrize = this.majorJackpotPool;
+            // Major Jackpot 20% of prize pool
+            const jackpotPrize = this.pool * 0.2;
             this.majorJackpotPool = 0; // Reset major jackpot after winning
             winnings += jackpotPrize;
             prizeType = "majorJackpot";
             // console.log(`Player ${playerId} won the Major Jackpot of $${jackpotPrize.toFixed(2)}!`);
         } else if (player.chance < this.miniJackpotChance) {
-            const jackpotPrize = this.miniJackpotPool;
+            // Mini Jackpot 10% of prize pool
+            const jackpotPrize = this.pool * 0.1;
             this.miniJackpotPool = 0; // Reset mini jackpot after winning
             winnings += jackpotPrize;
             prizeType = "miniJackpot";
